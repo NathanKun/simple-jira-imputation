@@ -9,6 +9,7 @@ import com.catprogrammer.jira.constant.Auth;
 
 import okhttp3.Authenticator;
 import okhttp3.Credentials;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -19,20 +20,19 @@ public class OKHttp3AutoConfiguration {
 
 	@Bean
 	public OkHttpClient okHttpClient() {
+        final String credential = Credentials.basic(Auth.getUser(), Auth.getPw());
 		OkHttpClient.Builder builder = new OkHttpClient.Builder();
 		
-		builder.authenticator(new Authenticator() {
-
-			@Override
-			public Request authenticate(Route route, Response response) throws IOException {
-				if (response.request().header("Authorization") != null) {
-					return null; // Give up, we've already failed to authenticate.
-				}
-
-				final String credential = Credentials.basic(Auth.getUser(), Auth.getPw());
-				return response.request().newBuilder().header("Authorization", credential).build();
-			}
-		});
+		// authenticator only get call when request response 401
+		// but we need add Authorization header to all request
+		// because some rest api doesn't require auth, but il will return less ressource if not authenticaded
+		builder.addInterceptor(new Interceptor() { 
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request request = chain.request().newBuilder().addHeader("Authorization", credential).build();
+                return chain.proceed(request);
+            }
+        });
 		
 		return builder.build();
 	}
