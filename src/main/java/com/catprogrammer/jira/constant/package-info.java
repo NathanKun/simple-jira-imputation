@@ -5,4 +5,4 @@
  * @author NatahanKun
  *
  */
-package com.catprogrammer.jira.controller;
+package com.catprogrammer.jira.constant;
