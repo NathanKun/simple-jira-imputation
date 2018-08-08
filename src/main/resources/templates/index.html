@@ -1,10 +1,62 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" >
 <head>
-    <title>Getting Started: Serving Web Content</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Simple Jira Imputation"/>
+    <meta name="author" content=""/>
+    <title>Simple Jira Imputation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
-    <p th:text="'index, ' + ${time} + '!'" />
+	<div>
+	    <table class="table table-sm table-hover table-bordered">
+    		<col style="width: 250px" />
+    		<col nowrap th:each="h: ${headers}" th:class="${h.data == 'WEEKEND' ? 'table-col-weekend' : ''}" />
+		    <thead>
+		    	<tr>
+		    		<th>Ticket</th>
+		    		<th th:each="h: ${headers}" th:text="${h.displayValue}"></th>
+		    	</tr>
+	    	</thead>
+	    	<tbody class="table-striped">
+	    		<tr>
+	    			<td class="table-ticket-key">Fill Day</td>
+		    		<td th:each="cell: ${fillDayRow}">
+		    			<th:block th:text="${cell.displayValue}"></th:block>
+		    			<!-- btn fill day -->
+		    		</td>
+	    		</tr>
+	    		<tr>
+	    			<td class="table-ticket-key">Total</td>
+		    		<td th:each="cell: ${totalRow}">
+		    			<th:block th:if="${cell.displayValue != '0.0h'}">
+		    				<span th:text="${cell.displayValue}" 
+		    					th:class="${cell.displayValue == '8.0h' ? 
+		    						'table-cell-total-green' : 'table-cell-total-red'}">
+		    				</span>
+		    			</th:block>
+		    		</td>
+	    		</tr>
+		    	<tr th:each="row: ${table}">
+		    		<td th:each="cell: ${row}">
+				    	<th:block th:if="${cell.type == T(com.catprogrammer.jira.model.CellType).TICKET}">
+			    			<p class="table-ticket-key" th:text=${cell.displayValue}></p>
+			    			<p class="table-ticket-summary" th:text=${cell.data}></p>
+			    		</th:block>
+				    	<th:block th:if="${cell.type == T(com.catprogrammer.jira.model.CellType).TIMESPENT}">
+			    			<span class="table-cell-timespent" th:text="${cell.displayValue}"></span>
+						</th:block>
+		    		</td>
+		    	</tr>
+	    	</tbody>
+	    </table>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>

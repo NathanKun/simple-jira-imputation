@@ -55,6 +55,10 @@ public class Entry {
     @SerializedName("updated")
     @Expose
     private LocalDateTime updated;
+    
+    public String getTimeSpentHour() {
+        return (double)timeSpent / 3600 + "h";
+    }
 
     public long getId() {
         return id;

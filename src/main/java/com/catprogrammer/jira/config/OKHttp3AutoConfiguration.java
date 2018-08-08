@@ -23,9 +23,10 @@ public class OKHttp3AutoConfiguration {
         final String credential = Credentials.basic(Auth.getUser(), Auth.getPw());
 		OkHttpClient.Builder builder = new OkHttpClient.Builder();
 		
-		// authenticator only get call when request response 401
+		// Okhttp's Authenticator only get call when request response 401
 		// but we need add Authorization header to all request
-		// because some rest api doesn't require auth, but il will return less ressource if not authenticaded
+		// because some rest API don't require authentication
+		// but it will return less resource if not authenticated
 		builder.addInterceptor(new Interceptor() { 
             @Override
             public Response intercept(Chain chain) throws IOException {

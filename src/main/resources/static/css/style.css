@@ -1,0 +1,32 @@
+th {
+	font-size: 10px;
+	padding: 0.2rem !important;
+}
+
+.table-ticket-key {
+	font-size: 13px;
+	margin-bottom: 0.5rem;
+}
+
+.table-ticket-summary {
+	font-size: 10px;
+	margin-bottom: 0.5rem;
+}
+
+.table-cell-timespent {
+	font-size: 13px;
+}
+
+.table-cell-total-red {
+	font-size: 13px;
+	color: #CC4444;
+}
+
+.table-cell-total-green {
+	font-size: 13px;
+	color: #44CC44;
+}
+
+.table-col-weekend {
+	background-color: #aaaaaa;
+}
