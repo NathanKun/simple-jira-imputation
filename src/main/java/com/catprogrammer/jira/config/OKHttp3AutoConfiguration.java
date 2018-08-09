@@ -1,19 +1,15 @@
 package com.catprogrammer.jira.config;
 
 import java.io.IOException;
-
+import java.util.concurrent.TimeUnit;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import com.catprogrammer.jira.constant.Auth;
-
-import okhttp3.Authenticator;
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.Route;
 
 @Configuration
 public class OKHttp3AutoConfiguration {
@@ -34,6 +30,8 @@ public class OKHttp3AutoConfiguration {
                 return chain.proceed(request);
             }
         });
+		
+		builder.readTimeout(30, TimeUnit.SECONDS);
 		
 		return builder.build();
 	}
