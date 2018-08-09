@@ -1,5 +1,10 @@
 package com.catprogrammer.jira.model;
 
+/**
+ * DTO of Html table cell
+ * @author NathanKun
+ *
+ */
 public class Cell {
     private String displayValue;
     private String data;

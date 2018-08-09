@@ -11,6 +11,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+/**
+ * Configuration class for OKHttp3 client
+ * @author NathanKun
+ *
+ */
 @Configuration
 public class OKHttp3AutoConfiguration {
 

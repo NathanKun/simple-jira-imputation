@@ -1,7 +1,5 @@
 /**
- * 
- */
-/**
+ * Configuration classes
  * @author NatahanKun
  *
  */

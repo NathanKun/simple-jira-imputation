@@ -14,6 +14,11 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 
+/**
+ * Configuration class for Gson
+ * @author NathanKun
+ *
+ */
 @Configuration
 public class GsonAutoConfiguration {
 	

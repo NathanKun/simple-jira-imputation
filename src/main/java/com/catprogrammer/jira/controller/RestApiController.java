@@ -17,6 +17,12 @@ import com.catprogrammer.jira.util.JiraUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+/**
+ * Restful Api controller
+ * RequestMapping("/rest")
+ * @author NathanKun
+ *
+ */
 @RestController
 @RequestMapping("/rest")
 public class RestApiController {

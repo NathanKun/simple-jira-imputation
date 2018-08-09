@@ -50,7 +50,13 @@ public class JiraUtil {
     @Autowired
     Gson gson;
 
-
+    /**
+     * Find worklogs betweens two dates of a user
+     * @param user  user
+     * @param start start date
+     * @param end   end date
+     * @return  list of worklogs
+     */
     public List<Worklog> findWorklogsBetween(String user, LocalDate start, LocalDate end) {
         String url = new StringBuilder().append(timesheetUrl)
                 .append("?targetUser=")
@@ -93,6 +99,15 @@ public class JiraUtil {
         }
     }
 
+    /**
+     * Add new worklog
+     * @param key           issue
+     * @param date          date to add
+     * @param hour          worklog timespent in hour
+     * @param startHour     hour of worklog start at 
+     * @param startMinute   minute of worklog start at
+     * @return  is successful
+     */
     public boolean addWorklog(String key, LocalDate date, double hour, int startHour, int startMinute) {
         // POST /rest/api/2/issue/{issueIdOrKey}/worklog
         String url = Auth.getUrl() + "api/2/issue/" + key + "/worklog?notifyUsers=false";
@@ -129,6 +144,13 @@ public class JiraUtil {
         }
     }
     
+    /**
+     * Update a worklog's timespent
+     * @param key       tocket
+     * @param worklogId worklog id
+     * @param hour      new worklog timespent in hour
+     * @return is successful
+     */
     public boolean updateWorklog(String key, String worklogId, double hour) {
         // PUT /rest/api/2/issue/{issueIdOrKey}/worklog/{id}
         String url = Auth.getUrl() + "api/2/issue/" + key + "/worklog/" + worklogId + "?notifyUsers=false";
@@ -163,6 +185,12 @@ public class JiraUtil {
         }
     }
     
+    /**
+     * Delete a worklog
+     * @param key       issue
+     * @param worklogId worklog id
+     * @return  is successful
+     */
     public boolean deleteWorklog(String key, String worklogId) {
         // DELETE /rest/api/2/issue/{issueIdOrKey}/worklog/{id}
         String url = Auth.getUrl() + "api/2/issue/" + key + "/worklog/" + worklogId + "?notifyUsers=false";
@@ -191,6 +219,11 @@ public class JiraUtil {
         }
     }
     
+    /**
+     * Get issue id by it's key
+     * @param key
+     * @return
+     */
     @SuppressWarnings("unused")
     private String issueKeyToId(String key) {
         if (key.equals("FNBCPV-11415")) {

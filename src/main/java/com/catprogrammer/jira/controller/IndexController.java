@@ -19,6 +19,12 @@ import com.catprogrammer.jira.model.Entry;
 import com.catprogrammer.jira.model.Worklog;
 import com.catprogrammer.jira.util.JiraUtil;
 
+/**
+ * Index controller
+ * RequestMapping("/")
+ * @author NathanKun
+ *
+ */
 @Controller
 @RequestMapping("/")
 public class IndexController {
