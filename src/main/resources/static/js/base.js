@@ -41,6 +41,53 @@ function addTimeToTicketOfDate(btn) {
 	var ticket = btn.attr("data-ticket");
 	console.log("Adding time to ticket " + ticket + " of date " + date);
 
+	const url = baseUrl + "rest/add";
+	swal({
+		  text: "Update worklog for ticket " + ticket + " of " + date,
+		  content: "input",
+		  button: {
+		    text: "Add",
+		    closeModal: false,
+		  },
+		})
+		.then(value => {
+		  if (isNaN(value)) { 
+			  swal("Add worklog", "input must be an integer or a float!", "error");
+			  throw null;
+		  }
+		  
+		  value = Number(value);
+			    
+		  if (value > 8 || value < 0) {
+			  swal("Add worklog", "input must < 8 or > 0", "error");
+			  throw null;
+		  }
+		 
+		  return $.ajax({
+				type : "POST",
+				url : url,
+				data : {
+					"ticket" : ticket,
+					"date" : date,
+					"value" : value
+				}});
+		})
+		.then(results => {
+			console.log(results);
+			return JSON.parse(results);
+		})
+		.then(json => {		 
+			swal("Add worklog", "Add success.", "success");
+			refresh();
+		})
+		.catch(err => {
+		  if (err) {
+		    swal("Add worklog", "The AJAX request failed!", "error");
+		  } else {
+		    swal.stopLoading();
+		    swal.close();
+		  }
+		});
 }
 
 function updateTimeToTicketOfDate(a) {
@@ -67,8 +114,8 @@ function updateTimeToTicketOfDate(a) {
 		  
 		  value = Number(value);
 			    
-		  if (value > 8 || value <= 0) {
-			  swal("Update worklog", "input must < 8 or >= 0", "error");
+		  if (value > 8 || value < 0) {
+			  swal("Update worklog", "input must < 8 or > 0", "error");
 			  throw null;
 		  }
 		 
@@ -76,10 +123,9 @@ function updateTimeToTicketOfDate(a) {
 				type : "POST",
 				url : url,
 				data : {
-					"date" : date,
 					"ticket" : ticket,
 					"id" : id,
-					"value" : value,
+					"value" : value
 				}});
 		})
 		.then(results => {
@@ -88,6 +134,7 @@ function updateTimeToTicketOfDate(a) {
 		})
 		.then(json => {		 
 			swal("Update worklog", "Update success.", "success");
+			refresh();
 		})
 		.catch(err => {
 		  if (err) {
@@ -97,4 +144,12 @@ function updateTimeToTicketOfDate(a) {
 		    swal.close();
 		  }
 		});
+}
+
+function refresh() {
+	$.get("http://localhost:8080/", function(res) {
+	    document.open();
+	    document.write(res);
+	    document.close();
+	});
 }

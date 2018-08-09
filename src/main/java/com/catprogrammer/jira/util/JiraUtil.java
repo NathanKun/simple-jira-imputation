@@ -3,7 +3,6 @@ package com.catprogrammer.jira.util;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import okhttp3.Call;
-import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -69,14 +67,14 @@ public class JiraUtil {
             Response res = call.execute();
             if (res.isSuccessful()) {
                 String body = res.body().string();
-                logger.info(body);
+                logger.debug(body);
 
                 JsonObject jsonObject = parser.parse(body).getAsJsonObject();
                 if (jsonObject.has("worklog")) {
                     JsonArray worklogJsonArray = jsonObject.getAsJsonArray("worklog");
                     List<Worklog> worklogs = gson.fromJson(worklogJsonArray, worklogListType);
 
-                    logger.info(worklogs.toString());
+                    logger.debug(worklogs.toString());
 
                     return worklogs;
                 } else {
@@ -95,7 +93,7 @@ public class JiraUtil {
         }
     }
 
-    public boolean doWorklog(String key, LocalDate date, double hour, int startHour, int startMinute) {
+    public boolean addWorklog(String key, LocalDate date, double hour, int startHour, int startMinute) {
         // POST /rest/api/2/issue/{issueIdOrKey}/worklog
         String url = Auth.getUrl() + "api/2/issue/" + key + "/worklog?notifyUsers=false";
         
@@ -131,6 +129,69 @@ public class JiraUtil {
         }
     }
     
+    public boolean updateWorklog(String key, String worklogId, double hour) {
+        // PUT /rest/api/2/issue/{issueIdOrKey}/worklog/{id}
+        String url = Auth.getUrl() + "api/2/issue/" + key + "/worklog/" + worklogId + "?notifyUsers=false";
+        
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        JsonObject params = new JsonObject();
+        params.addProperty("timeSpent", hour + "h");
+
+        okhttp3.RequestBody body = RequestBody.create(JSON, params.toString());
+        
+        Request request = new Request.Builder().put(body).url(url).build();
+        Call call = client.newCall(request);
+        
+        try {
+            Response response = call.execute();
+            
+            if (response.isSuccessful()) {
+                if (response.code() == 200) {
+                    return true;
+                } else {
+                    logger.error("response code: " + response.code());
+                    return false;
+                }
+            } else {
+                logger.error("Request not successful");
+                return false;
+            }
+        } catch (IOException e) {
+            logger.error("Call execution failed");
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public boolean deleteWorklog(String key, String worklogId) {
+        // DELETE /rest/api/2/issue/{issueIdOrKey}/worklog/{id}
+        String url = Auth.getUrl() + "api/2/issue/" + key + "/worklog/" + worklogId + "?notifyUsers=false";
+        
+        Request request = new Request.Builder().delete().url(url).build();
+        Call call = client.newCall(request);
+        
+        try {
+            Response response = call.execute();
+            
+            if (response.isSuccessful()) {
+                if (response.code() == 204) {
+                    return true;
+                } else {
+                    logger.error("response code: " + response.code());
+                    return false;
+                }
+            } else {
+                logger.error("Request not successful");
+                return false;
+            }
+        } catch (IOException e) {
+            logger.error("Call execution failed");
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    @SuppressWarnings("unused")
     private String issueKeyToId(String key) {
         if (key.equals("FNBCPV-11415")) {
             return "389651";
@@ -150,7 +211,7 @@ public class JiraUtil {
             Response res = call.execute();
             if (res.isSuccessful()) {
                 String body = res.body().string();
-                logger.info(body);
+                logger.debug(body);
                 
                 JsonObject jsonObject = parser.parse(body).getAsJsonObject();
                 try {
