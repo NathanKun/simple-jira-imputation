@@ -1,6 +1,13 @@
 th {
 	font-size: 10px;
 	padding: 0.2rem !important;
+    text-align: center; 
+    vertical-align: middle;
+}
+
+td {
+    text-align: center; 
+    vertical-align: middle;
 }
 
 .table-ticket-key {
@@ -29,4 +36,10 @@ th {
 
 .table-col-weekend {
 	background-color: #aaaaaa;
+}
+
+.table-fillday-btn {
+	font-size: 13px;
+	padding: .175rem .2rem;
+	margin: 0;
 }

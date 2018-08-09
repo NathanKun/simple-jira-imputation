@@ -2,10 +2,8 @@ package com.catprogrammer.jira.controller;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +35,7 @@ public class IndexController {
             @RequestParam(value = "end", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
 
         if (start == null && end == null) {
-            end = LocalDate.now();
+            end = LocalDate.now().plusDays(7);
             start = end.minusDays(30);
         }
         if (end == null) {
@@ -60,7 +58,7 @@ public class IndexController {
 
         for (Worklog w : worklogs) {
             List<Cell> row = new ArrayList<Cell>();
-            row.add(new Cell(w.getKey(), w.getSummary(), null, CellType.TICKET));
+            row.add(new Cell(w.getKey(), w.getSummary(), CellType.TICKET));
 
             for (int i = 0; i <= start.until(end).getDays(); i++) {
                 LocalDate day = start.plusDays(i);
@@ -68,14 +66,23 @@ public class IndexController {
 
                 for (Entry entry : w.getEntries()) {
                     if (day.isEqual(entry.getStartDate().toLocalDate())) {
-                        found = true;
-                        row.add(new Cell(entry.getTimeSpentHour(), null, null, CellType.TIMESPENT));
+                        if (!found) {
+                            found = true;
+                            row.add(new Cell(entry.getTimeSpentHour(), String.valueOf(entry.getId()), CellType.TIMESPENT));
+                        } else {
+                            Cell c = row.get(row.size() - 1);
+                            String oldValue = c.getDisplayValue();
+                            double oldValueDouble = Double.parseDouble(oldValue.substring(0, c.getDisplayValue().length() - 1));
+                            double newValueDouble = (double)entry.getTimeSpent() / 3600 + oldValueDouble;
+                            c.setDisplayValue(newValueDouble + "h");
+                            c.setData(c.getData() + "," + entry.getId());
+                        }
                         totals[i] += entry.getTimeSpent();
                     }
                 }
 
                 if (!found) {
-                    row.add(new Cell(null, w.getKey(), null, CellType.ADDTIME));
+                    row.add(new Cell(null, w.getKey(), CellType.ADDTIME));
                 }
             }
 
@@ -88,11 +95,11 @@ public class IndexController {
             headers.add(new Cell(start.plusDays(i).format(shortFormatter),
                     day.getDayOfWeek() == DayOfWeek.SATURDAY
                             || day.getDayOfWeek() == DayOfWeek.SUNDAY ? "WEEKEND" : "WEEKDAY",
-                    null, CellType.HEADER));
+                    CellType.HEADER));
 
-            fillDayRow.add(new Cell(null, day.format(longFormatter), null, CellType.FILLDAY));
+            fillDayRow.add(new Cell(null, day.format(longFormatter), CellType.FILLDAY));
 
-            totalRow.add(new Cell(totals[i] / 3600 + "h", null, null, CellType.TOTAL));
+            totalRow.add(new Cell(totals[i] / 3600 + "h", null, CellType.TOTAL));
         }
 
         model.addAttribute("headers", headers);
