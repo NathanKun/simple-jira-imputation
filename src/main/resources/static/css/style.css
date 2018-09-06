@@ -43,3 +43,9 @@ td {
 	padding: .175rem .2rem;
 	margin: 0;
 }
+
+.add-input {
+	font-size: 12px;
+	display: block;
+	margin-top: 1em;
+}
