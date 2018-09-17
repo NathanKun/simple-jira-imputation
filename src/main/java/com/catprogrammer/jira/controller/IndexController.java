@@ -39,8 +39,8 @@ public class IndexController {
             @RequestParam(value = "end", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
 
         if (start == null && end == null) {
-            end = LocalDate.now().plusDays(7);
-            start = end.minusDays(30);
+            start = LocalDate.now().withDayOfMonth(1);
+            end = start.withDayOfMonth(start.lengthOfMonth());
         }
         if (end == null) {
             end = start.plusDays(30);
