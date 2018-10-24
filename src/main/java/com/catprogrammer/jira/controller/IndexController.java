@@ -36,7 +36,8 @@ public class IndexController {
     @GetMapping("/")
     public String index(Model model,
             @RequestParam(value = "start", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate start,
-            @RequestParam(value = "end", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
+            @RequestParam(value = "end", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end,
+            @RequestParam(value = "user", required = false) String user) {
 
         if (start == null && end == null) {
             start = LocalDate.now().withDayOfMonth(1);
@@ -49,7 +50,7 @@ public class IndexController {
             start = end.minusDays(30);
         }
 
-        List<Worklog> worklogs = jiraUtil.findWorklogsBetween(Auth.getUser(), start, end);
+        List<Worklog> worklogs = jiraUtil.findWorklogsBetween(user != null ? user : Auth.getUser(), start, end);
 
         DateTimeFormatter shortFormatter = DateTimeFormatter.ofPattern("MM-dd");
         DateTimeFormatter longFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
