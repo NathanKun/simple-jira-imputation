@@ -94,12 +94,12 @@ public class RestApiController {
             restHours = 8 - 0.5 - total;
         }
 
-        boolean res = jiraUtil.addWorklog("FNBCPV-11415", date, dailyHours, 10, 30)
-                && jiraUtil.addWorklog("FNBCPV-14761", date, restHours, 11, 00);
+        boolean res1 = jiraUtil.addWorklog("FNBCPV-11415", date, dailyHours, 10, 30);
+        boolean res2 = jiraUtil.addWorklog("FNBCPV-14761", date, restHours, 11, 00);
 
         JsonObject json = new JsonObject();
         json.addProperty("valid", true);
-        json.addProperty("data", res);
+        json.addProperty("data", res1 && res2);
 
         return new ResponseEntity<String>(json.toString(), HttpStatus.OK);
     }
