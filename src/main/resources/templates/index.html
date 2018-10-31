@@ -12,76 +12,18 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-	<div>
-	    <table class="table table-sm table-hover table-bordered">
-    		<col style="width: 250px" />
-    		<col nowrap th:each="h: ${headers}" th:class="${h.data == 'WEEKEND' ? 'table-col-weekend' : ''}" />
-		    <thead>
-		    	<tr>
-		    		<th>Ticket</th>
-		    		<th th:each="h: ${headers}" th:text="${h.displayValue}"></th>
-		    	</tr>
-	    	</thead>
-	    	<tbody class="table-striped">
-	    		<tr>
-	    			<td class="table-ticket-key">Fill Day</td>
-		    		<td th:each="cell, iter: ${fillDayRow}">
-		    			<th:block th:if="${headers[iter.index].data != 'WEEKEND' && 
-		    					totalRow[iter.index].displayValue != '8.0h'}">
-			    			<button class="table-fillday-btn btn btn-primary" 
-			    					data-th-attr="data-date=${cell.data}, data-total=${totalRow[iter.index].displayValue}"
-			    					onclick="fillDayBtnOnclick(this);">
-			    				Fill
-			    			</button>
-		    			</th:block>
-		    		</td>
-	    		</tr>
-	    		<tr>
-	    			<td class="table-ticket-key">Total</td>
-		    		<td th:each="cell: ${totalRow}">
-		    			<th:block th:if="${cell.displayValue != '0.0h'}">
-		    				<span th:text="${cell.displayValue}" 
-		    					th:class="${cell.displayValue == '8.0h' ? 
-		    						'table-cell-total-green' : 'table-cell-total-red'}">
-		    				</span>
-		    			</th:block>
-		    		</td>
-	    		</tr>
-		    	<tr th:each="row: ${table}">
-		    		<td th:each="cell,iter: ${row}">
-		    		
-				    	<th:block th:if="${cell.type == T(com.catprogrammer.jira.model.CellType).TICKET}">
-			    			<p class="table-ticket-key" th:text=${cell.displayValue}></p>
-			    			<p class="table-ticket-summary" th:text=${cell.data}></p>
-			    		</th:block>
-			    		
-				    	<th:block th:if="${cell.type == T(com.catprogrammer.jira.model.CellType).TIMESPENT}">
-			    			<a class="table-cell-timespent" th:text="${cell.displayValue}" href="#"
-			    					data-th-attr="data-date=${fillDayRow[iter.index - 1].data}, data-ticket=${row[0].displayValue}, data-worklogid=${cell.data}"
-			    					onclick="updateTimeToTicketOfDate(this);"></a>
-						</th:block>
-						
-				    	<th:block th:if="${cell.type == T(com.catprogrammer.jira.model.CellType).ADDTIME}">
-			    			<th:block th:if="${headers[iter.index - 1].data != 'WEEKEND' && 
-			    					totalRow[iter.index - 1].displayValue != '8.0h'}">
-				    			<button class="table-fillday-btn btn btn-primary" 
-				    					data-th-attr="data-date=${fillDayRow[iter.index - 1].data}, data-ticket=${row[0].displayValue}"
-				    					onclick="addTimeToTicketOfDate(this);"> + </button>
-			    			</th:block>
-						</th:block>
-						
-		    		</td>
-		    	</tr>
-		    	<tr><td><button class="btn btn-primary"onclick="addTicketBtnOnClick();">Add</button></td></tr>
-	    	</tbody>
-	    </table>
+	<div id="main-div">
+		<th:block th:if="${not jsrender}" th:include="index.table.thymeleaf" />
+		<th:block th:if="${jsrender}" th:text="Loading..." />
     </div>
+	<th:block th:if="${jsrender}" th:include="index.table.jsrender" />
     
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jsrender/0.9.91/jsrender.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-	<script src="js/base.js"></script>
+	<script src="js/base.thymeleaf.js"></script>
+	<th:block th:if="${jsrender}"><script src="js/base.jsrender.js"></script></th:block>
 </body>
 </html>

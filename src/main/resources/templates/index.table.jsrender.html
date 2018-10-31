@@ -1,0 +1,80 @@
+<script id="tableTemplate" type="text/x-jsrender">
+<table class="table table-sm table-hover table-bordered">
+	<col style="width: 250px" />
+	{{for headers}}
+		{{if data == 'WEEKEND'}}
+			<col nowrap class="table-col-weekend}" />
+		{{else}}
+			<col nowrap />
+		{{/if}}
+	{{/for}}
+    <thead>
+    	<tr>
+    		<th>Ticket</th>
+			{{for headers}}
+    			<th>{{:displayValue}}</th>
+			{{/for}}
+    	</tr>
+   	</thead>
+   	<tbody class="table-striped">
+   		<tr>
+   			<td class="table-ticket-key">Fill Day</td>
+			{{for fillDayRow itemVar='~cell'}}
+		   		<td>
+		   			{{if ~root.headers[#index].data != 'WEEKEND' && ~root.totalRow[#index].displayValue != '8.0h'}}
+			   			<button class="table-fillday-btn btn btn-primary" 
+			   					data-date="{{:~cell.data}}"
+			   					data-total="{{:~root.totalRow[#getIndex()].displayValue}}"
+			   					onclick="fillDayBtnOnclick(this);">
+			   				Fill
+			   			</button>
+		   			{{/if}}
+		   		</td>
+		   	{{/for}}
+   		</tr>
+
+   		<tr>
+   			<td class="table-ticket-key">Total</td>
+   			{{for totalRow}}
+	    		<td>
+	    			{{if displayValue != '0.0h'}}
+	    				{{if displayValue == '8.0h'}}
+	    					<span class="table-cell-total-green">{{:displayValue}}</span>
+	    				{{else}}
+	    					<span class="table-cell-total-red">{{:displayValue}}</span>
+	    				{{/if}}
+	    			{{/if}}
+	    		</td>
+    		{{/for}}
+   		</tr>
+
+    	{{for table itemVar='~row'}}
+   		<tr>
+    		{{for ~row itemVar='~cell'}}
+    		<td>
+    			{{if ~cell.type == 'TICKET'}}
+	    			<p class="table-ticket-key">{{:~cell.displayValue}}</p>
+	    			<p class="table-ticket-summary">{{:~cell.data}}</p>
+	    		{{else ~cell.type == 'TIMESPENT'}}
+	    			<a class="table-cell-timespent"
+	   				   href="#"
+	   				   data-date="{{:~root.fillDayRow[#getIndex() - 1].data}}"
+	   				   data-ticket="{{:~row[0].displayValue}}"
+	   				   data-worklogid="{{:~cell.data}}"
+	   				   onclick="updateTimeToTicketOfDate(this);">{{:~cell.displayValue}}</a>
+	    		{{else ~cell.type == 'ADDTIME'}}
+	    			{{if ~root.headers[#getIndex() - 1].data != 'WEEKEND' && ~root.totalRow[#getIndex() - 1].displayValue != '8.0h'}}
+		    			<button class="table-fillday-btn btn btn-primary" 
+		    					data-date="{{:~root.fillDayRow[#getIndex() - 1].data}}"
+								data-ticket="{{:~row[0].displayValue}}"
+		    					onclick="addTimeToTicketOfDate(this);"> + </button>
+					{{/if}}
+				{{/if}}
+    		</td>
+    		{{/for}}
+   		</tr>
+    	{{/for}}
+    	<tr><td><button class="btn btn-primary"onclick="addTicketBtnOnClick();">Add</button></td></tr>
+   	</tbody>
+</table>
+</script>

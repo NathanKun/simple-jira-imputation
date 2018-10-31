@@ -128,7 +128,7 @@ function fillDayBtnOnclick(btn) {
             if (res["data"]) {
                 btn.prop("disabled", true);
                 btn.html("OK");
-                // swal("Fillday", "Fillday success.", "success");
+                setTimeout(function() { refresh(); }, 1000);
             } else {
                 swal("Fillday", "Fillday response error, see log.", "error");
                 btn.html('Fill');
@@ -201,7 +201,7 @@ function updateTimeToTicketOfDate(a) {
     a = $(a); // transform to jquery object
     var date = a.attr("data-date");
     var ticket = a.attr("data-ticket");
-    var id = a.attr("data-worklogid");
+    var id = a.attr("data-worklogid").split(',');
     console.log("Updating worklog id " + id + " of ticket " + ticket + " of date " + date);
 
     const url = baseUrl + "rest/update";
@@ -226,13 +226,28 @@ function updateTimeToTicketOfDate(a) {
                 swal("Update worklog", "input must < 8 or > 0", "error");
                 throw null;
             }
+            
+            if (id.length > 1) {
+            	for (let i = 1; i < id.length; i++) {
+            	    console.log("Delete worklog id " + id[i] + " of ticket " + ticket + " of date " + date);
+            		$.ajax({
+                        type: "POST",
+                        url: baseUrl + "rest/delete",
+                        data: {
+                            "ticket": ticket,
+                            "id": id[i]
+                        }
+                    });
+            	}
+            }
 
+            console.log("Update worklog id " + id[0] + " of ticket " + ticket + " of date " + date);
             return $.ajax({
                 type: "POST",
                 url: url,
                 data: {
                     "ticket": ticket,
-                    "id": id,
+                    "id": id[0],
                     "value": value
                 }
             });
@@ -256,7 +271,7 @@ function updateTimeToTicketOfDate(a) {
 }
 
 function refresh() {
-    $.get("http://localhost:8080/", function(res) {
+    $.get("http://localhost:8080?json=false", function(res) {
         document.open();
         document.write(res);
         document.close();
