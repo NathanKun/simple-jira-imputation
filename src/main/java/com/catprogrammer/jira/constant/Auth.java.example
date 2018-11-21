@@ -1,0 +1,19 @@
+package com.catprogrammer.jira.constant;
+
+public class Auth {
+	final private static String user = "username";
+	final private static String pw = "password;";
+	final private static String url = "https://example.com/jira/rest/";
+	
+	public static String getUser() {
+		return user;
+	}
+	
+	public static String getPw() {
+		return pw;
+	}
+	
+	public static String getUrl() {
+		return url;
+	}
+}
