@@ -183,22 +183,11 @@ public class RestApiController {
             return new ResponseEntity<String>(json.toString(), HttpStatus.BAD_REQUEST);
         }
 
-        double dailyHours = 0, restHours = 0;
-        if (total >= 7.5) {
-            // fill daily meeting
-            dailyHours = 8 - total;
-        } else {
-            // fill daily meeting and "[imputation] Montée en compétence nouveau collaborateur"
-            dailyHours = 0.5;
-            restHours = 8 - 0.5 - total;
-        }
-
-        boolean res1 = jiraUtil.addWorklog("FNBCPV-11415", date, dailyHours, 10, 30);
-        boolean res2 = jiraUtil.addWorklog("FNBCPV-14761", date, restHours, 11, 00);
+        boolean res = jiraUtil.addWorklog("FNBCPV-9957", date, 8 - total, 10, 00);
 
         JsonObject json = new JsonObject();
         json.addProperty("valid", true);
-        json.addProperty("data", res1 && res2);
+        json.addProperty("data", res);
 
         return new ResponseEntity<String>(json.toString(), HttpStatus.OK);
     }
