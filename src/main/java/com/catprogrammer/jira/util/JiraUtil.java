@@ -25,6 +25,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * Class to consume jira rest api
@@ -72,10 +73,12 @@ public class JiraUtil {
         try {
             Response res = call.execute();
             if (res.isSuccessful()) {
-                String body = res.body().string();
-                logger.debug(body);
+                ResponseBody body = res.body();
+                String bodyStr = res.body().string();
+                body.close();
+                logger.debug(bodyStr);
 
-                JsonObject jsonObject = parser.parse(body).getAsJsonObject();
+                JsonObject jsonObject = parser.parse(bodyStr).getAsJsonObject();
                 if (jsonObject.has("worklog")) {
                     JsonArray worklogJsonArray = jsonObject.getAsJsonArray("worklog");
                     List<Worklog> worklogs = gson.fromJson(worklogJsonArray, worklogListType);
@@ -91,7 +94,9 @@ public class JiraUtil {
             } else {
                 logger.error("Request not successful");
                 logger.error("Status = " + res.code());
-                logger.error(res.body().string());
+                ResponseBody body = res.body();
+                logger.error(body.string());
+                body.close();
                 return Collections.emptyList();
             }
         } catch (IOException e) {
@@ -120,7 +125,7 @@ public class JiraUtil {
         params.addProperty("started", date.atTime(startHour, startMinute).atZone(ZoneId.systemDefault()).format(longDateTimeFormatter));
         params.addProperty("timeSpent", hour + "h");
 
-        okhttp3.RequestBody body = RequestBody.create(JSON, params.toString());
+        RequestBody body = RequestBody.create(JSON, params.toString());
         
         Request request = new Request.Builder().post(body).url(url).build();
         Call call = client.newCall(request);
@@ -161,7 +166,7 @@ public class JiraUtil {
         JsonObject params = new JsonObject();
         params.addProperty("timeSpent", hour + "h");
 
-        okhttp3.RequestBody body = RequestBody.create(JSON, params.toString());
+        RequestBody body = RequestBody.create(JSON, params.toString());
         
         Request request = new Request.Builder().put(body).url(url).build();
         Call call = client.newCall(request);
@@ -245,10 +250,12 @@ public class JiraUtil {
         try {
             Response res = call.execute();
             if (res.isSuccessful()) {
-                String body = res.body().string();
-                logger.debug(body);
+            	ResponseBody body = res.body();
+                String bodyStr = body.string();
+                body.close();
+                logger.debug(bodyStr);
                 
-                JsonObject jsonObject = parser.parse(body).getAsJsonObject();
+                JsonObject jsonObject = parser.parse(bodyStr).getAsJsonObject();
                 try {
                     return jsonObject.getAsJsonArray("issues").get(0).getAsJsonObject().get("id").getAsString();
                 } catch (NullPointerException | IllegalStateException e) {
