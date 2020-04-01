@@ -90,6 +90,8 @@ public class JiraUtil {
 
             } else {
                 logger.error("Request not successful");
+                logger.error("Status = " + res.code());
+                logger.error(res.body().string());
                 return Collections.emptyList();
             }
         } catch (IOException e) {
