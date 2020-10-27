@@ -82,7 +82,7 @@ public class OKHttp3AutoConfiguration {
                 }
             });
 
-            builder.readTimeout(60, TimeUnit.SECONDS);
+            builder.readTimeout(120, TimeUnit.SECONDS);
 
             return builder.build();
 
