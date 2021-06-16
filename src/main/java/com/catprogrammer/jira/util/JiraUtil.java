@@ -135,9 +135,11 @@ public class JiraUtil {
             
             if (response.isSuccessful()) {
                 if (response.code() == 201) {
+                    response.body().close();
                     return true;
                 } else {
                     logger.error("response code: " + response.code());
+                    response.body().close();
                     return false;
                 }
             } else {
@@ -176,9 +178,11 @@ public class JiraUtil {
             
             if (response.isSuccessful()) {
                 if (response.code() == 200) {
+                    response.body().close();
                     return true;
                 } else {
                     logger.error("response code: " + response.code());
+                    response.body().close();
                     return false;
                 }
             } else {
@@ -210,9 +214,11 @@ public class JiraUtil {
             
             if (response.isSuccessful()) {
                 if (response.code() == 204) {
+                    response.body().close();
                     return true;
                 } else {
                     logger.error("response code: " + response.code());
+                    response.body().close();
                     return false;
                 }
             } else {
@@ -250,7 +256,7 @@ public class JiraUtil {
         try {
             Response res = call.execute();
             if (res.isSuccessful()) {
-            	ResponseBody body = res.body();
+                ResponseBody body = res.body();
                 String bodyStr = body.string();
                 body.close();
                 logger.debug(bodyStr);
